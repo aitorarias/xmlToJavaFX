@@ -8,76 +8,78 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
 /**
- * Class to store data from a product
+ * Clase para almacenar datos desde un producto. 
  * 
  * @author AitorArias
  *
  */
+
+ // Clase principal
 public class Product {
 
-	private final StringProperty name; // name of the product
-	private final IntegerProperty quantity; // quantity of the product
-	private final DoubleProperty unitPrice; // unit price of the product
-	private final StringProperty filePath; // path image file
+	private final StringProperty nombre; // nombre del producto
+	private final IntegerProperty cantidad; // cantidad
+	private final DoubleProperty precio; // precio
+	private final StringProperty filePath; // path del archivo
 
 	/**
-	 * Default constructor
+	 * Constructor por defecto
 	 */
 	public Product() {
 		this(null, 0, 0.0, null);
 	}
 
 	/**
-	 * Constructor using fields
+	 * Constructor usando los campos
 	 * 
-	 * @param name      String
-	 * @param quantity  Integer
-	 * @param unitPrice Double
+	 * @param nombre      String
+	 * @param cantidad  Integer
+	 * @param precio Double
 	 * @param filePath  String
 	 */
-	public Product(String name, int quantity, double unitPrice, String filePath) {
-		this.name = new SimpleStringProperty(name);
-		this.quantity = new SimpleIntegerProperty(quantity);
-		this.unitPrice = new SimpleDoubleProperty(unitPrice);
+	public Product(String nombre, int cantidad, double precio, String filePath) {
+		this.nombre = new SimpleStringProperty(nombre);
+		this.cantidad = new SimpleIntegerProperty(cantidad);
+		this.precio = new SimpleDoubleProperty(precio);
 		this.filePath = new SimpleStringProperty(filePath);
 	}
 
 	// Getters & Setters
 
 	public String getName() {
-		return name.get();
+		return nombre.get();
 	}
 
-	public void setName(String name) {
-		this.name.set(name);
+	public void setName(String nombre) {
+		this.nombre.set(nombre);
 	}
 
 	public StringProperty getNameProperty() {
-		return name;
+		return nombre;
 	}
 
 	public int getQuantity() {
-		return quantity.get();
+		return cantidad.get();
 	}
 
-	public void setQuantity(int quantity) {
-		this.quantity.set(quantity);
+	public void setQuantity(int cantidad) {
+		this.cantidad.set(cantidad);
 	}
 
 	public IntegerProperty getQuantityProperty() {
-		return quantity;
+		return cantidad;
 	}
 
 	public double getUnitPrice() {
-		return unitPrice.get();
+		return precio.get();
 	}
 
-	public void setUnitPrice(double unitPrice) {
-		this.unitPrice.set(unitPrice);
+	public void setUnitPrice(double precio) {
+		this.precio.set(precio);
 	}
 
 	public DoubleProperty getUnitPriceProperty() {
-		return unitPrice;
+		return precio;
 	}
 
 	public String getFilePath() {
@@ -91,10 +93,12 @@ public class Product {
 	public StringProperty getFilePathProperty() {
 		return filePath;
 	}
-
+	// Sobreescribo
 	@Override
+	// parseado a String
 	public String toString() {
-		return "Product [name=" + name.get() + ", quantity=" + quantity.get() + ", unitPrice=" + unitPrice.get()
+		// devuelve todo
+		return "Product [nombre=" + nombre.get() + ", cantidad=" + cantidad.get() + ", precio=" + precio.get()
 				+ ", filePath=" + filePath.get() + "]";
 	}
 }

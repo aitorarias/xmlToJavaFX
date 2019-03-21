@@ -12,14 +12,14 @@ import com.aitorarias.entity.Product;
 import com.aitorarias.wrapper.ProductListWrapper;
 
 /**
- * Helper class to manage the xml files
+ * Clase para manejar los archivos xml
  * @author AitorArias
  *
  */
 public class XmlFileManager {
 	
 	/**
-	 * Saves a list of products stored in a wrapper object to a specific file
+	 * Guardar la lista de productos almacenadas en el objecto wrapper a un archivo especifico
 	 * 
 	 * @param wrapper ProductListWrapper
 	 * @param file File
@@ -27,13 +27,17 @@ public class XmlFileManager {
 	 */
 	public static void saveToXmlFile(ProductListWrapper wrapper, File file) throws JAXBException {
 		JAXBContext context = JAXBContext.newInstance(ProductListWrapper.class);
+		// La clase Marshaller es responsable de gobernar el proceso de serialización de los árboles de contenido Java en datos XML. 
+		// Proporciona los métodos básicos de clasificación:
 		Marshaller marshaller = context.createMarshaller();
+		// Creamos el Marshaller
+		// Referencias: https://docs.oracle.com/javase/7/docs/api/javax/xml/bind/Marshaller.html
 		marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
 		marshaller.marshal(wrapper, file);
 	}
 	
 	/**
-	 * Loads a list of products from a .xml file
+	 * Carga la lista de productos desde un .xml
 	 * 
 	 * @param file File
 	 * @return List<Product>
