@@ -1,4 +1,4 @@
-package com.eolxsi.enums;
+package com.aitorarias.enums;
 
 public enum FileOption {
 	

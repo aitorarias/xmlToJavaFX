@@ -1,4 +1,4 @@
-package com.eolxsi.util;
+package com.aitorarias.util;
 
 import java.util.Optional;
 
@@ -10,7 +10,7 @@ import javafx.scene.control.Alert.AlertType;
 /**
  * Helper class to display Dialogs messages to the user.
  * 
- * @author LuisDaniel
+ * @author AitorArias
  *
  */
 public class DialogBuilder {

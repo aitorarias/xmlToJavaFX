@@ -1,16 +1,16 @@
-package com.eolxsi.wrapper;
+package com.aitorarias.wrapper;
 
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import com.eolxsi.entity.Product;
+import com.aitorarias.entity.Product;
 
 /**
  * Wrapper class to persist data in xml file.
  * 
- * @author LuisDaniel
+ * @author AitorArias
  *
  */
 @XmlRootElement(name = "products")

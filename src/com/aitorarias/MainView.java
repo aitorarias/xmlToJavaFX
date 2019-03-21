@@ -1,4 +1,4 @@
-package com.eolxsi;
+package com.aitorarias;
 
 import java.awt.Desktop;
 import java.io.File;
@@ -10,11 +10,11 @@ import java.util.function.UnaryOperator;
 
 import javax.xml.bind.JAXBException;
 
-import com.eolxsi.entity.Product;
-import com.eolxsi.enums.FileOption;
-import com.eolxsi.util.DialogBuilder;
-import com.eolxsi.util.XmlFileManager;
-import com.eolxsi.wrapper.ProductListWrapper;
+import com.aitorarias.entity.Product;
+import com.aitorarias.enums.FileOption;
+import com.aitorarias.util.DialogBuilder;
+import com.aitorarias.util.XmlFileManager;
+import com.aitorarias.wrapper.ProductListWrapper;
 
 import javafx.application.Application;
 import javafx.beans.property.ReadOnlyObjectWrapper;
@@ -49,20 +49,20 @@ import javafx.util.converter.DoubleStringConverter;
 import javafx.util.converter.IntegerStringConverter;
 
 /**
- * Main View class of the app.
+ * Main View class of the app. Clase principal para la vista de la app. 
  * 
- * This class is responsible for displaying the UI and handling it's events.
+ * Esta clase es la responsable de enseñar la interfaz grafica (UI) y manejar sus eventos.
  * 
- * @author LuisDaniel
+ * @author AitorArias
  *
  */
 public class MainView extends Application {
 
-	// Screen dimensions
+	// Dimensiones de la pantalla
 	private static final int SCREEN_WIDTH = 600;
 	private static final int SCREEN_HEIGHT = 500;
 
-	// Screen elements
+	// ¿Qué elementos tiene la pantalla? Elementos importados de JavaFX: 
 	private TextField productNameTextField = new TextField();
 	private TextField quantityTextField = new TextField();
 	private TextField unitPriceTextField = new TextField();
@@ -83,12 +83,12 @@ public class MainView extends Application {
 	private ObservableList<Product> products = FXCollections.observableArrayList();
 
 	/**
-	 * Starts the application
+	 * Aquí empieza la aplicación
 	 */
 	@Override
 	public void start(Stage primaryStage) {
 
-		// A Simple Javafx TextField Using TextFormatter To Allow Only Double Value
+		// Simple TextField que usa el TextFormatter que nos permite el doble valor. Sacado de aquí: 
 		// ref.:https://gist.github.com/karimsqualli96/f8d4c2995da8e11496ed
 		UnaryOperator<TextFormatter.Change> filter = new UnaryOperator<TextFormatter.Change>() {
 			@Override
@@ -110,11 +110,11 @@ public class MainView extends Application {
 			}
 		};
 
-		// quantity can only be numeric
+		// la cantidad sólo puede permitir valores numéricos
 		quantityTextField.setTextFormatter(new TextFormatter<>(filter));
 		quantityTextField.setMaxWidth(Double.MAX_VALUE);
 
-		// unit price can only be numeric
+		// los precios sólo pueden ser numéricos
 		unitPriceTextField.setTextFormatter(new TextFormatter<>(filter));
 		unitPriceTextField.setMaxWidth(Double.MAX_VALUE);
 
@@ -131,16 +131,19 @@ public class MainView extends Application {
 		inputGridPane.setVgap(5);
 		inputGridPane.setHgap(10);
 		inputGridPane.getColumnConstraints().addAll(labelColumnConstraint, textFielColumnConstraint);
-		inputGridPane.add(new Label("Product name:"), 0, 0);
+		// Capa donde metemos el nombre del producto. 
+		inputGridPane.add(new Label("Nombre del producto:"), 0, 0);
 		inputGridPane.add(productNameTextField, 1, 0);
-		inputGridPane.add(new Label("Quantity: "), 0, 1);
+		// Capa donde metemos la cantidad que deseamos
+		inputGridPane.add(new Label("Cantidad: "), 0, 1);
 		inputGridPane.add(quantityTextField, 1, 1);
-		inputGridPane.add(new Label("Unit price: "), 0, 2);
+		// Capa donde metemos el precio unitario
+		inputGridPane.add(new Label("Precio: "), 0, 2);
 		inputGridPane.add(unitPriceTextField, 1, 2);
 		inputGridPane.add(addImageButton, 0, 3);
 		inputGridPane.add(imageLabel, 1, 3);
 
-		// Creating the tableview and columns
+		// Creamos las tablas y sus columnas
 		productNameColumn.setPrefWidth(250);
 		productNameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
 		productNameColumn.setCellFactory(TextFieldTableCell.forTableColumn());
@@ -172,90 +175,101 @@ public class MainView extends Application {
 						.setUnitPrice(t.getNewValue());
 			}
 		});
-
+		// Interfaz gráfica para el botón de "Borrar"
 		deleteButtonColumn.setPrefWidth(100);
 		deleteButtonColumn.setCellValueFactory(param -> new ReadOnlyObjectWrapper<>(param.getValue()));
 		deleteButtonColumn.setCellFactory(param -> new TableCell<Product, Product>() {
-			private final Button deleteButton = new Button("Delete");
-
+			private final Button deleteButton = new Button("Borrar");
+			// Sobreescribe el método
 			@Override
+			// Función para actualizar el Item. Si no existe elemento en la tabla, la interfaz nos devuelve null
 			protected void updateItem(Product product, boolean item) {
 				super.updateItem(product, item);
 				if (product == null) {
 					setGraphic(null);
 					return;
 				}
-
+			// Si existe y borramos un item, ésta tabla adquiere 0 valor
 				setGraphic(deleteButton);
+				// Acción de borrar: 
 				deleteButton.setOnAction(event -> getTableView().getItems().remove(product));
 			}
 		});
-
+		// Diseño del botón "Imagen"
 		previewButtonColumn.setPrefWidth(75);
 		previewButtonColumn.setCellValueFactory(param -> new ReadOnlyObjectWrapper<>(param.getValue()));
 		previewButtonColumn.setCellFactory(param -> new TableCell<Product, Product>() {
 			private final Button previewButton = new Button("View");
 
 			@Override
+			// Volvemos a actualizar el producto como en el deleteItem. Si no existe imagen, devuelve null
 			protected void updateItem(Product product, boolean item) {
 				super.updateItem(product, item);
 				if (product == null) {
 					setGraphic(null);
 					return;
 				}
-
+			// Si existe imagen, entonces podemos verla
 				setGraphic(previewButton);
 				previewButton.setOnAction(event -> {
 					Desktop desktop = Desktop.getDesktop();
 					File file = new File(product.getFilePath());
+					// lanzamos error. UBUNTU 18.04 tiene problemas para abrir, no así en mi Windows. ¡OJO!
 					try {
 						desktop.open(file);
 					} catch (IOException e) {
-						DialogBuilder.showErrorgDialog("Image preview", null, "Error opening image: " + e.getMessage());
+						// sino, dialogo de error 
+						DialogBuilder.showErrorgDialog("Previsualización imagen", null, "Errror al abrir el archivo: " + e.getMessage());
 						e.printStackTrace();
 					}
 				});
 			}
 		});
-
+		// Documentado desde: https://docs.oracle.com/javafx/2/ui_controls/table-view.htm#sthref119
 		productsTableView.setEditable(true);
 		productsTableView.setItems(products);
+		// Añadimos TODAS las columnas
 		productsTableView.getColumns().addAll(productNameColumn, productQuantityColumn, productUnitPriceColumn,
 				previewButtonColumn, deleteButtonColumn);
 
 		addProductButton.setPrefWidth(150);
 		addProductButton.setOnAction((ActionEvent e) -> {
+			// Manejo del botón Añadir
 			handleAddButtonClick();
 		});
 
 		addImageButton.setPrefWidth(200);
 		addImageButton.setOnAction((ActionEvent e) -> {
+			// Manejo de la Imagen. Stage funciona perfectamente en Windows 10
 			handleImageButtonClick(primaryStage);
 		});
 
-		// Creating the menus
+		// Creando los menús
 		menuBar.setPrefWidth(200);
 		menuBar.getMenus().add(fileMenu);
 		fileMenu.getItems().addAll(saveAsMenuItem, loadMenuItem);
-		// Adding action for clicking on the save as menu
+		// Le damos "vida" al boton "guardar como"
 		saveAsMenuItem.setOnAction((ActionEvent e) -> {
+			// NO PUEDE HABER PRODUCTO VACIO, SINO: 
 			if (isProductListEmpty()) {
-				DialogBuilder.showErrorgDialog("Save product list", null,
-						"Product list must contain at least 1 (one) item");
+				DialogBuilder.showErrorgDialog("Guardando la lista", null,
+						"La lista debe contener al menos un producto.");
 				return;
 			} else {
+				// Si no está vacio, abre pantalla para guardar el path
 				showFileChooser(FileOption.SAVE, primaryStage);
 			}
 		});
-		// Adding action for clicking on the load menu
+		// Adding action for clicking on the load menu. Añadimos vida al clickar el cargar lista. 
 		loadMenuItem.setOnAction((ActionEvent e) -> {
-			ButtonType option = DialogBuilder.showSimpleConfirmDialog("Load from file", null,
-					"Load data from file? All current data will be lost.");
+			ButtonType option = DialogBuilder.showSimpleConfirmDialog("Importa desde archivo", null,
+					"¿Estás seguro de importart? Todos tus datos se perderán.");
 			if (option == ButtonType.OK) {
+				// si clickamos en OK, volvemos al primaryStage
 				showFileChooser(FileOption.LOAD, primaryStage);
 			}
 		});
-
+		// VBox propio de JavaF1
 		VBox vbox1 = new VBox();
 		vbox1.setSpacing(10);
 		vbox1.setPadding(new Insets(5));
@@ -264,9 +278,9 @@ public class MainView extends Application {
 		BorderPane mainPane = new BorderPane();
 		mainPane.setTop(menuBar);
 		mainPane.setCenter(vbox1);
-
+		// Clase contenedora para todo el contenido en la Scene gráfica. El background de la escena está cubierta con la propiedad fill
 		Scene scene = new Scene(mainPane);
-
+		//primaryStage ya definidos durante todo el proyecto
 		primaryStage.setTitle("Java XML Invoice");
 		primaryStage.setWidth(SCREEN_WIDTH);
 		primaryStage.setHeight(SCREEN_HEIGHT);
@@ -277,133 +291,158 @@ public class MainView extends Application {
 	}
 
 	/**
-	 * Starts the application
+	 * Empieza la app
 	 * 
 	 * @param args
 	 */
 	public static void main(String[] args) {
+		// lanzamiento
 		launch(args);
 	}
 
 	/**
-	 * Check for invalid input data
+	 * Checkeamos los datos inválidos
 	 * 
 	 * @return String
 	 */
+
+	// inInputValid controla todos los posibles errores. Los tres campos han de ser cubiertos, sino, mensaje de alerta: 
 	private String isInputValid() {
 		StringBuilder builder = new StringBuilder();
 		if (productNameTextField.getText().length() == 0) {
-			builder.append("Product name cannot be empty");
+			builder.append("El nombre no puede estar vacío");
 		}
 		if (quantityTextField.getText().length() == 0) {
-			builder.append("\nQuantity cannot be empty");
+			builder.append("\nLa cantidad no puede estar vacía");
 		}
 		if (unitPriceTextField.getText().length() == 0) {
-			builder.append("\nUnit price cannot be empty");
+			builder.append("\nEl precio no puede estar vacío");
 		}
 
 		return builder.toString();
 	}
 
 	/**
-	 * Check if the product list is empty
+	 * Checkeamos si la "lista de nuestra compra" está vacía
 	 * 
-	 * @return true if the list is empty and false if the list is not.
+	 * @return true si la lista esta vacia y false si no lo está.
 	 */
 	private boolean isProductListEmpty() {
+		// condicional ternario nuevo en Java: igual que el if pero en una línea. Si ? entonces :
 		return products.isEmpty() ? true : false;
 	}
 
 	/**
-	 * Handles the event click on the add button. This method capture the values
-	 * from the input textfields and add to the products ObservableList.
-	 * 
-	 * After adding the values to the list the inputs textfields are removed from
-	 * screen.
+	 * Maneja el evento cuando clickamos el boton de añadir. Este método captura los valores desde el input
+	 * y añade los productos al ObservableList. 
+	 * Después de añadir los valores a la lista los inputs se borran de la pantalla. 
 	 */
 	private void handleAddButtonClick() {
 		String errorMessage = isInputValid();
 		if (errorMessage.length() > 0) {
-			DialogBuilder.showErrorgDialog("Invalid input", null, errorMessage);
+			// Enseña el diálogo
+			DialogBuilder.showErrorgDialog("Input inválido", null, errorMessage);
 			return;
 		}
+		// Obligación del String
 		String name = productNameTextField.getText().toString();
+		// Obligación del Int
 		Integer quantiy = Integer.valueOf(quantityTextField.getText().toString());
+		// Obligacion del Double
 		Double price = Double.valueOf(unitPriceTextField.getText().toString());
-		String filePath = (!imageLabel.getText().equals("No image selected...")) ? imageLabel.getText() : null;
+		String filePath = (!imageLabel.getText().equals("No se ha seleccionado imagen")) ? imageLabel.getText() : null;
+		// Se añaden los productos
 		products.add(new Product(name, quantiy, price, filePath));
+		// se borran todos los campos
 		clearInputFields();
 	}
 	
 	/**
-	 * Handles action for clicking the button "Add Image..."
-	 * When the user clicks this button, a File Chooser window will pop-up.
-	 * The user can select a picture and then the {@link Label imageLabel} will show 
-	 * the file name for the user. 
+	 * Manejamos la acción para clickar el boton "Añadir image"
+	 * Cuando clickamos en este botón, se abre ventana
+	 * El usuario puede elegir una imagen y luego el link Label imageLabel
+	 * El nombre del archivo para el usuario
 	 * 
 	 * @param primaryStage
 	 */
 	private void handleImageButtonClick(Stage primaryStage) {
+		// https://docs.oracle.com/javase/tutorial/uiswing/components/filechooser.html
 		FileChooser fileChooser = new FileChooser();
-		List<FileChooser.ExtensionFilter> filters = Arrays.asList(new FileChooser.ExtensionFilter("All Images", "*.*"),
+		List<FileChooser.ExtensionFilter> filters = Arrays.asList(new FileChooser.ExtensionFilter("Todas las imagenes", "*.*"),
+		// Extensiones disponibles: .JPG y .PNG
+		// Documentacion para elegir extensiones: https://www.codejava.net/java-se/swing/add-file-filter-for-jfilechooser-dialog
 				new FileChooser.ExtensionFilter("JPG", "*.jpg"), new FileChooser.ExtensionFilter("PNG", "*.png"));
-		configureFileChooser(fileChooser, "Picture selection...", filters);
+		configureFileChooser(fileChooser, "Selecciona las imagenes...", filters);
 		File file = fileChooser.showOpenDialog(primaryStage);
+		// si el archivo no está vacio, entonces
 		if (file != null) {
 			imageLabel.setText(file.getAbsolutePath());
 		}
 	}
 
 	/**
-	 * Clear all the input fields
+	 * Limpiamos todos los campos
 	 */
+
+	// Nuevamente, reseteamos todos los campos una vez completada una acción con éxito 
 	private void clearInputFields() {
 		productNameTextField.clear();
 		quantityTextField.clear();
 		unitPriceTextField.clear();
-		imageLabel.setText("No image selected...");
+		imageLabel.setText("No existe imagen...");
 	}
 
 	/**
-	 * Displays the file chooser to the user. This method is used when the user
-	 * wants to save a file or to load a file
+	 * Enseña ventana para elegir archivo al usuario. Este metodo es usado cuando el usuario
+	 * quiere guardar o cargar un nuevo archivo.
 	 * 
 	 * @param option FileOption
 	 * @param stage  Stage
 	 */
+
+	// Pasados como argumentos FileOption y Stage en la función que nos enseña archivo a elegir. 
+	// Documentación aquí: https://docs.oracle.com/javase/8/javafx/api/javafx/stage/Stage.html
 	private void showFileChooser(FileOption option, Stage stage) {
 		FileChooser fileChooser = new FileChooser();
+		// Lista que me da a elegir con el File Chooser con su respectiva extension. En este caso solo guardamos XML.
 		List<FileChooser.ExtensionFilter> filters = Arrays.asList(new FileChooser.ExtensionFilter("XML", "*.xml"));
-		configureFileChooser(fileChooser, "Save file", filters);
+		// Filtro queda configurado en nuestra carpeta util > XmlFilter
+		configureFileChooser(fileChooser, "Guardar archivo", filters);
+		// Lanzamos opciones con el switch 
 		switch (option) {
+		// Si es Save
 		case SAVE:
 			saveFile(stage, fileChooser);
 			break;
+		// Si es LOAD
 		case LOAD:
 			loadFile(stage, fileChooser);
 			break;
+		// Si no es ninguna de los dos, opcion por defecto y rompe el bucle
 		default:
-			DialogBuilder.showErrorgDialog("File menu", null, "Invalid option");
+			DialogBuilder.showErrorgDialog("Menu", null, "Opcion invalida");
 			break;
 		}
 	}
 
 	/**
-	 * Configures the file chooser
-	 * 
-	 * @param fileChooser FileChooser
+	 * Configurando el el archivo a elegir
+	 * Todos los parámetros importados
+	 * @param fileChooser FileChooser 
 	 * @param title       String
 	 * @param filters     List<FileChooser.ExtensionFilter>
 	 */
 	private void configureFileChooser(FileChooser fileChooser, String title,
+			// Extensiones importada del utils
 			List<FileChooser.ExtensionFilter> filters) {
 		fileChooser.setTitle(title);
 		fileChooser.setInitialDirectory(new File(System.getProperty("user.home")));
+		// Añade todo
 		fileChooser.getExtensionFilters().addAll(filters);
 	}
 
 	/**
-	 * Loads the data from file
+	 * Carga la lista desde nuestra ventana
 	 * 
 	 * @param stage       Stage
 	 * @param fileChooser FileChooser

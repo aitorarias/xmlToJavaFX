@@ -1,4 +1,4 @@
-package com.eolxsi.util;
+package com.aitorarias.util;
 
 import java.io.File;
 import java.util.List;
@@ -8,12 +8,12 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
-import com.eolxsi.entity.Product;
-import com.eolxsi.wrapper.ProductListWrapper;
+import com.aitorarias.entity.Product;
+import com.aitorarias.wrapper.ProductListWrapper;
 
 /**
  * Helper class to manage the xml files
- * @author LuisDaniel
+ * @author AitorArias
  *
  */
 public class XmlFileManager {

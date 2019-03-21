@@ -1,4 +1,4 @@
-package com.eolxsi.entity;
+package com.aitorarias.entity;
 
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.IntegerProperty;
@@ -10,7 +10,7 @@ import javafx.beans.property.StringProperty;
 /**
  * Class to store data from a product
  * 
- * @author LuisDaniel
+ * @author AitorArias
  *
  */
 public class Product {
