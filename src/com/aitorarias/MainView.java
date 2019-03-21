@@ -49,36 +49,38 @@ import javafx.util.converter.DoubleStringConverter;
 import javafx.util.converter.IntegerStringConverter;
 
 /**
- * Main View class of the app. Clase principal para la vista de la app. 
+ * Clase principal para la vista de la app. 
  * 
  * Esta clase es la responsable de enseñar la interfaz grafica (UI) y manejar sus eventos.
  * 
  * @author AitorArias
  *
  */
+
+// Hereda todas las props de Application el MainView
 public class MainView extends Application {
 
 	// Dimensiones de la pantalla
 	private static final int SCREEN_WIDTH = 600;
 	private static final int SCREEN_HEIGHT = 500;
-
-	// ¿Qué elementos tiene la pantalla? Elementos importados de JavaFX: 
+	// Invocamos tambien a Product.java
+	// Innacesibles desde otros partes del proyecto. ¿Qué elementos tiene la pantalla? Elementos importados de JavaFX: 
 	private TextField productNameTextField = new TextField();
 	private TextField quantityTextField = new TextField();
 	private TextField unitPriceTextField = new TextField();
-	private Button addProductButton = new Button("Add");
-	private Button addImageButton = new Button("Add image...");
-	private Label imageLabel = new Label("No image selected...");
+	private Button addProductButton = new Button("Añadir");
+	private Button addImageButton = new Button("Añadir imagen...");
+	private Label imageLabel = new Label("No se ha seleccionado imagen...");
 	private TableView<Product> productsTableView = new TableView<>();
-	private TableColumn<Product, String> productNameColumn = new TableColumn<>("Product Name");
-	private TableColumn<Product, Integer> productQuantityColumn = new TableColumn<>("Quantity");
-	private TableColumn<Product, Double> productUnitPriceColumn = new TableColumn<>("Unit Price");
-	private TableColumn<Product, Product> deleteButtonColumn = new TableColumn<>("Remove");
-	private TableColumn<Product, Product> previewButtonColumn = new TableColumn<>("View Pic");
+	private TableColumn<Product, String> productNameColumn = new TableColumn<>("Nombre");
+	private TableColumn<Product, Integer> productQuantityColumn = new TableColumn<>("Cantidad");
+	private TableColumn<Product, Double> productUnitPriceColumn = new TableColumn<>("Precio");
+	private TableColumn<Product, Product> deleteButtonColumn = new TableColumn<>("Eliminar");
+	private TableColumn<Product, Product> previewButtonColumn = new TableColumn<>("Ver imagen");
 	private MenuBar menuBar = new MenuBar();
-	private Menu fileMenu = new Menu("File");
-	private MenuItem saveAsMenuItem = new MenuItem("Save as...");
-	private MenuItem loadMenuItem = new MenuItem("Load...");
+	private Menu fileMenu = new Menu("Opciones");
+	private MenuItem saveAsMenuItem = new MenuItem("Guardar como...");
+	private MenuItem loadMenuItem = new MenuItem("Importar...");
 
 	private ObservableList<Product> products = FXCollections.observableArrayList();
 
@@ -119,13 +121,13 @@ public class MainView extends Application {
 		unitPriceTextField.setMaxWidth(Double.MAX_VALUE);
 
 		productNameTextField.setMaxWidth(Double.MAX_VALUE);
-
+		// Eclipse diseño
 		ColumnConstraints labelColumnConstraint = new ColumnConstraints();
 		labelColumnConstraint.setPercentWidth(30);
 
 		ColumnConstraints textFielColumnConstraint = new ColumnConstraints();
 		textFielColumnConstraint.setPercentWidth(70);
-
+		// GridPane importado desde JavaFX: https://docs.oracle.com/javase/8/javafx/api/javafx/scene/layout/GridPane.html
 		GridPane inputGridPane = new GridPane();
 		inputGridPane.setPadding(new Insets(10));
 		inputGridPane.setVgap(5);
@@ -145,7 +147,7 @@ public class MainView extends Application {
 
 		// Creamos las tablas y sus columnas
 		productNameColumn.setPrefWidth(250);
-		productNameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+		productNameColumn.setCellValueFactory(new PropertyValueFactory<>("nombre"));
 		productNameColumn.setCellFactory(TextFieldTableCell.forTableColumn());
 		productNameColumn.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<Product, String>>() {
 			@Override
@@ -155,11 +157,16 @@ public class MainView extends Application {
 		});
 
 		productQuantityColumn.setPrefWidth(100);
-		productQuantityColumn.setCellValueFactory(new PropertyValueFactory<>("quantity"));
+		// Tipos de  parametros en JavaFX:
+		// 	S - Tabla genérica (i.e. S == TableView<S>)
+		// 	T - El tipo de contenido en todas las celdas es TableColum
+		productQuantityColumn.setCellValueFactory(new PropertyValueFactory<>("cantidad"));
 		productQuantityColumn.setCellFactory(TextFieldTableCell.forTableColumn(new IntegerStringConverter()));
 		productQuantityColumn.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<Product, Integer>>() {
 			@Override
 			public void handle(CellEditEvent<Product, Integer> t) {
+				// conseguimos el TableView, los Items, la posicion de la Tabla, columnna, cantidad, y nuevo valor
+				// TODO ELLO VIENE DE PRODUCT.JAVA
 				((Product) t.getTableView().getItems().get(t.getTablePosition().getRow())).setQuantity(t.getNewValue());
 
 			}
@@ -199,7 +206,7 @@ public class MainView extends Application {
 		previewButtonColumn.setPrefWidth(75);
 		previewButtonColumn.setCellValueFactory(param -> new ReadOnlyObjectWrapper<>(param.getValue()));
 		previewButtonColumn.setCellFactory(param -> new TableCell<Product, Product>() {
-			private final Button previewButton = new Button("View");
+			private final Button previewButton = new Button("Ver Imagen");
 
 			@Override
 			// Volvemos a actualizar el producto como en el deleteItem. Si no existe imagen, devuelve null
@@ -269,7 +276,7 @@ public class MainView extends Application {
 				showFileChooser(FileOption.LOAD, primaryStage);
 			}
 		});
-		// VBox propio de JavaF1
+		// VBox propio de JavaFX
 		VBox vbox1 = new VBox();
 		vbox1.setSpacing(10);
 		vbox1.setPadding(new Insets(5));
@@ -436,6 +443,7 @@ public class MainView extends Application {
 			// Extensiones importada del utils
 			List<FileChooser.ExtensionFilter> filters) {
 		fileChooser.setTitle(title);
+		// OJO! AQUI ES DONDE PUEDE HABER PROBLEMAS WINDOWS VS UBUNTU. ¡¡¡PROXIMA ACTUALIZACIÓN!!!
 		fileChooser.setInitialDirectory(new File(System.getProperty("user.home")));
 		// Añade todo
 		fileChooser.getExtensionFilters().addAll(filters);
@@ -449,52 +457,73 @@ public class MainView extends Application {
 	 */
 	private void loadFile(Stage stage, FileChooser fileChooser) {
 		File file = fileChooser.showOpenDialog(stage);
+		// posible error, por lo tanto lanzo un try y un catch:
+		// si no existe archivo, entonces
 		if (file != null) {
 			try {
+				// Importado
 				List<Product> list = XmlFileManager.loadFromXmlFile(file);
 				products.clear();
 				products.addAll(list);
 			} catch (JAXBException e) {
-				DialogBuilder.showErrorgDialog("Load file", null, "Error loading file: " + e.getMessage());
+				// muestrame el error con una ventana emergente
+				DialogBuilder.showErrorgDialog("Cargando archivo", null, "Error al cargar el archivo: " + e.getMessage());
 			}
 		}
 	}
 
 	/**
-	 * Saves the file
+	 * Guardando el archivo
 	 * 
 	 * @param stage       Stage
 	 * @param fileChooser FileChooser
 	 */
+
+	// Este evento se hace en dos etapas
+	// Una vez guardamos el archivo, posteriormente nos indica el sitio donde queremos guardar las imagenes. 
+	// Esto se puede mejorar, pero no supe hacerlo de otra manera que seguro existe
+	// En nuevas actualizaciones se intentará optimizar dichas funciones 
 	private void saveFile(Stage stage, FileChooser fileChooser) {
+		// https://www.programcreek.com/java-api-examples/?class=javafx.stage.FileChooser&method=showSaveDialog
+		// Método que utilice para llamar a la imagen
 		File file = fileChooser.showSaveDialog(stage);
 		if (file != null) {
-			// First, save the images to the internal files
+			//Primero, guardamos las imagenes de manera interna
+			// Para cada producto
 			products.forEach(product -> {
+				// Origen
 				File source = new File(product.getFilePath());
+				// Destino
+				// Pictures es como tengo yo definidio mi path en Ubuntu para que fuese correctamente. En Windows imagenes o images
 				File destination = new File("pictures/", source.getName());
 				if(!destination.exists()) {
+					// https://docs.oracle.com/javase/8/javafx/api/javafx/stage/DirectoryChooser.html desde Java FX
 					DirectoryChooser dirChooser = new DirectoryChooser();
-					dirChooser.setTitle("Select directory to save image files...");
+					dirChooser.setTitle("Selecciona un directorio para guardar las imagenes...");
 					dirChooser.setInitialDirectory(new File(System.getProperty("user.home")));
 					destination = dirChooser.showDialog(stage);
 					destination = new File(destination.getPath(), source.getName());
 				}
+				// try y catch para checkear que todo está correcto
 				try {
 					Files.copy(source.toPath(), destination.toPath());
 					product.setFilePath(destination.getAbsolutePath());
 				} catch (IOException e) {
-					DialogBuilder.showErrorgDialog("Saving pictures", null, "Error while saving pictures: " + e.getMessage());
+					DialogBuilder.showErrorgDialog("Guardando las imagenes", null, "Error mientras guardamos la imagen: " + e.getMessage());
 					e.printStackTrace();
 				}
 			});
+			// Disponible en nuestra carpeta wrapper > ProductListWrapper.java. Nuevo Objeto ProductListWrapper
 			ProductListWrapper wrapper = new ProductListWrapper();
+			// coge los prodcutos
 			wrapper.setProducts(products);
 			try {
+				//XmlFileMager disponible en nuestra carpeta util > XmlFileManager
 				XmlFileManager.saveToXmlFile(wrapper, file);
-				DialogBuilder.showInformationDialog("Save file", null, "File saved");
+				DialogBuilder.showInformationDialog("Guarda los archivos", null, "Archivo guardado");
 			} catch (JAXBException e) {
-				DialogBuilder.showErrorgDialog("Save file", null, "Error saving file: " + e.getMessage());
+				// lanza error
+				DialogBuilder.showErrorgDialog("Guarda el archivo", null, "Error al guardar: " + e.getMessage());
 			}
 		}
 	}

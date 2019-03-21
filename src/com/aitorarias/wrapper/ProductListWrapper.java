@@ -13,6 +13,8 @@ import com.aitorarias.entity.Product;
  * @author AitorArias
  *
  */
+ // Referencias en: https://docs.oracle.com/javase/tutorial/collections/implementations/wrapper.html
+
 @XmlRootElement(name = "products")
 public class ProductListWrapper {
 
