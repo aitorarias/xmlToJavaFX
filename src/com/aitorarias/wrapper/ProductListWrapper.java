@@ -17,12 +17,12 @@ import com.aitorarias.entity.Product;
 
 // Cuando una clase de nivel superior o un tipo enum se anota con la anotación @XmlRootElement, 
 // su valor se representa como elemento XML en un documento XML.
-@XmlRootElement(name = "products")
+@XmlRootElement(nombre = "products")
 public class ProductListWrapper {
 	// traigo Product
 	private List<Product> products;
 	// ¿qué devuelve en el XML?
-	@XmlElement(name = "product")
+	@XmlElement(nombre = "product")
 	public List<Product> getProducts(){
 		return products;
 	}

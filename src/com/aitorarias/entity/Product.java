@@ -58,15 +58,15 @@ public class Product {
 		return nombre;
 	}
 
-	public int getQuantity() {
+	public int getCantidad() {
 		return cantidad.get();
 	}
 
-	public void setQuantity(int cantidad) {
+	public void setCantidad(int cantidad) {
 		this.cantidad.set(cantidad);
 	}
 
-	public IntegerProperty getQuantityProperty() {
+	public IntegerProperty getCantidadProperty() {
 		return cantidad;
 	}
 
@@ -98,7 +98,7 @@ public class Product {
 	// parseado a String
 	public String toString() {
 		// devuelve todo
-		return "Product [nombre=" + nombre.get() + ", cantidad=" + cantidad.get() + ", precio=" + precio.get()
+		return "Producto [nombre=" + nombre.get() + ", cantidad=" + cantidad.get() + ", precio=" + precio.get()
 				+ ", filePath=" + filePath.get() + "]";
 	}
 }

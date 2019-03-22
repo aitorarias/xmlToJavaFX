@@ -65,16 +65,16 @@ public class MainView extends Application {
 	private static final int SCREEN_HEIGHT = 500;
 	// Invocamos tambien a Product.java
 	// Innacesibles desde otros partes del proyecto. ¿Qué elementos tiene la pantalla? Elementos importados de JavaFX: 
-	private TextField productNameTextField = new TextField();
-	private TextField quantityTextField = new TextField();
-	private TextField unitPriceTextField = new TextField();
+	private TextField productNombreTextField = new TextField();
+	private TextField cantidadTextField = new TextField();
+	private TextField precioTextField = new TextField();
 	private Button addProductButton = new Button("Añadir");
 	private Button addImageButton = new Button("Añadir imagen...");
 	private Label imageLabel = new Label("No se ha seleccionado imagen...");
 	private TableView<Product> productsTableView = new TableView<>();
-	private TableColumn<Product, String> productNameColumn = new TableColumn<>("Nombre");
-	private TableColumn<Product, Integer> productQuantityColumn = new TableColumn<>("Cantidad");
-	private TableColumn<Product, Double> productUnitPriceColumn = new TableColumn<>("Precio");
+	private TableColumn<Product, String> productNombreColumn = new TableColumn<>("Nombre");
+	private TableColumn<Product, Integer> productCantidadColumn = new TableColumn<>("Cantidad");
+	private TableColumn<Product, Double> productPrecioColumn = new TableColumn<>("Precio");
 	private TableColumn<Product, Product> deleteButtonColumn = new TableColumn<>("Eliminar");
 	private TableColumn<Product, Product> previewButtonColumn = new TableColumn<>("Ver imagen");
 	private MenuBar menuBar = new MenuBar();
@@ -113,14 +113,14 @@ public class MainView extends Application {
 		};
 
 		// la cantidad sólo puede permitir valores numéricos
-		quantityTextField.setTextFormatter(new TextFormatter<>(filter));
-		quantityTextField.setMaxWidth(Double.MAX_VALUE);
+		cantidadTextField.setTextFormatter(new TextFormatter<>(filter));
+		cantidadTextField.setMaxWidth(Double.MAX_VALUE);
 
 		// los precios sólo pueden ser numéricos
-		unitPriceTextField.setTextFormatter(new TextFormatter<>(filter));
-		unitPriceTextField.setMaxWidth(Double.MAX_VALUE);
+		precioTextField.setTextFormatter(new TextFormatter<>(filter));
+		precioTextField.setMaxWidth(Double.MAX_VALUE);
 
-		productNameTextField.setMaxWidth(Double.MAX_VALUE);
+		productNombreTextField.setMaxWidth(Double.MAX_VALUE);
 		// Eclipse diseño
 		ColumnConstraints labelColumnConstraint = new ColumnConstraints();
 		labelColumnConstraint.setPercentWidth(30);
@@ -135,51 +135,51 @@ public class MainView extends Application {
 		inputGridPane.getColumnConstraints().addAll(labelColumnConstraint, textFielColumnConstraint);
 		// Capa donde metemos el nombre del producto. 
 		inputGridPane.add(new Label("Nombre del producto:"), 0, 0);
-		inputGridPane.add(productNameTextField, 1, 0);
+		inputGridPane.add(productNombreTextField, 1, 0);
 		// Capa donde metemos la cantidad que deseamos
 		inputGridPane.add(new Label("Cantidad: "), 0, 1);
-		inputGridPane.add(quantityTextField, 1, 1);
+		inputGridPane.add(cantidadTextField, 1, 1);
 		// Capa donde metemos el precio unitario
 		inputGridPane.add(new Label("Precio: "), 0, 2);
-		inputGridPane.add(unitPriceTextField, 1, 2);
+		inputGridPane.add(precioTextField, 1, 2);
 		inputGridPane.add(addImageButton, 0, 3);
 		inputGridPane.add(imageLabel, 1, 3);
 
 		// Creamos las tablas y sus columnas
-		productNameColumn.setPrefWidth(250);
-		productNameColumn.setCellValueFactory(new PropertyValueFactory<>("nombre"));
-		productNameColumn.setCellFactory(TextFieldTableCell.forTableColumn());
-		productNameColumn.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<Product, String>>() {
+		productNombreColumn.setPrefWidth(250);
+		productNombreColumn.setCellValueFactory(new PropertyValueFactory<>("nombre"));
+		productNombreColumn.setCellFactory(TextFieldTableCell.forTableColumn());
+		productNombreColumn.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<Product, String>>() {
 			@Override
 			public void handle(CellEditEvent<Product, String> t) {
-				((Product) t.getTableView().getItems().get(t.getTablePosition().getRow())).setName(t.getNewValue());
+				((Product) t.getTableView().getItems().get(t.getTablePosition().getRow())).setNombre(t.getNewValue());
 			}
 		});
 
-		productQuantityColumn.setPrefWidth(100);
+		productCantidadColumn.setPrefWidth(100);
 		// Tipos de  parametros en JavaFX:
 		// 	S - Tabla genérica (i.e. S == TableView<S>)
 		// 	T - El tipo de contenido en todas las celdas es TableColum
-		productQuantityColumn.setCellValueFactory(new PropertyValueFactory<>("cantidad"));
-		productQuantityColumn.setCellFactory(TextFieldTableCell.forTableColumn(new IntegerStringConverter()));
-		productQuantityColumn.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<Product, Integer>>() {
+		productCantidadColumn.setCellValueFactory(new PropertyValueFactory<>("cantidad"));
+		productCantidadColumn.setCellFactory(TextFieldTableCell.forTableColumn(new IntegerStringConverter()));
+		productCantidadColumn.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<Product, Integer>>() {
 			@Override
 			public void handle(CellEditEvent<Product, Integer> t) {
 				// conseguimos el TableView, los Items, la posicion de la Tabla, columnna, cantidad, y nuevo valor
 				// TODO ELLO VIENE DE PRODUCT.JAVA
-				((Product) t.getTableView().getItems().get(t.getTablePosition().getRow())).setQuantity(t.getNewValue());
+				((Product) t.getTableView().getItems().get(t.getTablePosition().getRow())).setCantidad(t.getNewValue());
 
 			}
 		});
 
-		productUnitPriceColumn.setPrefWidth(75);
-		productUnitPriceColumn.setCellValueFactory(new PropertyValueFactory<>("unitPrice"));
-		productUnitPriceColumn.setCellFactory(TextFieldTableCell.forTableColumn(new DoubleStringConverter()));
-		productUnitPriceColumn.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<Product, Double>>() {
+		productPrecioColumn.setPrefWidth(75);
+		productPrecioColumn.setCellValueFactory(new PropertyValueFactory<>("Precio"));
+		productPrecioColumn.setCellFactory(TextFieldTableCell.forTableColumn(new DoubleStringConverter()));
+		productPrecioColumn.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<Product, Double>>() {
 			@Override
 			public void handle(CellEditEvent<Product, Double> t) {
 				((Product) t.getTableView().getItems().get(t.getTablePosition().getRow()))
-						.setUnitPrice(t.getNewValue());
+						.setPrecio(t.getNewValue());
 			}
 		});
 		// Interfaz gráfica para el botón de "Borrar"
@@ -236,7 +236,7 @@ public class MainView extends Application {
 		productsTableView.setEditable(true);
 		productsTableView.setItems(products);
 		// Añadimos TODAS las columnas
-		productsTableView.getColumns().addAll(productNameColumn, productQuantityColumn, productUnitPriceColumn,
+		productsTableView.getColumns().addAll(productNombreColumn, productCantidadColumn, productPrecioColumn,
 				previewButtonColumn, deleteButtonColumn);
 
 		addProductButton.setPrefWidth(150);
@@ -316,13 +316,13 @@ public class MainView extends Application {
 	// inInputValid controla todos los posibles errores. Los tres campos han de ser cubiertos, sino, mensaje de alerta: 
 	private String isInputValid() {
 		StringBuilder builder = new StringBuilder();
-		if (productNameTextField.getText().length() == 0) {
+		if (productNombreTextField.getText().length() == 0) {
 			builder.append("El nombre no puede estar vacío");
 		}
-		if (quantityTextField.getText().length() == 0) {
+		if (cantidadTextField.getText().length() == 0) {
 			builder.append("\nLa cantidad no puede estar vacía");
 		}
-		if (unitPriceTextField.getText().length() == 0) {
+		if (precioTextField.getText().length() == 0) {
 			builder.append("\nEl precio no puede estar vacío");
 		}
 
@@ -352,14 +352,14 @@ public class MainView extends Application {
 			return;
 		}
 		// Obligación del String
-		String name = productNameTextField.getText().toString();
+		String nombre = productNombreTextField.getText().toString();
 		// Obligación del Int
-		Integer quantiy = Integer.valueOf(quantityTextField.getText().toString());
+		Integer cantidad = Integer.valueOf(cantidadTextField.getText().toString());
 		// Obligacion del Double
-		Double price = Double.valueOf(unitPriceTextField.getText().toString());
+		Double precio = Double.valueOf(precioTextField.getText().toString());
 		String filePath = (!imageLabel.getText().equals("No se ha seleccionado imagen")) ? imageLabel.getText() : null;
 		// Se añaden los productos
-		products.add(new Product(name, quantiy, price, filePath));
+		products.add(new Product(nombre, cantidad, precio, filePath));
 		// se borran todos los campos
 		clearInputFields();
 	}
@@ -393,9 +393,9 @@ public class MainView extends Application {
 
 	// Nuevamente, reseteamos todos los campos una vez completada una acción con éxito 
 	private void clearInputFields() {
-		productNameTextField.clear();
-		quantityTextField.clear();
-		unitPriceTextField.clear();
+		productNombreTextField.clear();
+		cantidadTextField.clear();
+		precioTextField.clear();
 		imageLabel.setText("No existe imagen...");
 	}
 
@@ -495,14 +495,14 @@ public class MainView extends Application {
 				File source = new File(product.getFilePath());
 				// Destino
 				// Pictures es como tengo yo definidio mi path en Ubuntu para que fuese correctamente. En Windows imagenes o images
-				File destination = new File("pictures/", source.getName());
+				File destination = new File("pictures/", source.getNombre());
 				if(!destination.exists()) {
 					// https://docs.oracle.com/javase/8/javafx/api/javafx/stage/DirectoryChooser.html desde Java FX
 					DirectoryChooser dirChooser = new DirectoryChooser();
 					dirChooser.setTitle("Selecciona un directorio para guardar las imagenes...");
 					dirChooser.setInitialDirectory(new File(System.getProperty("user.home")));
 					destination = dirChooser.showDialog(stage);
-					destination = new File(destination.getPath(), source.getName());
+					destination = new File(destination.getPath(), source.getNombre());
 				}
 				// try y catch para checkear que todo está correcto
 				try {
